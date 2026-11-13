@@ -1,0 +1,5 @@
+# 도커 환경 및 캐시
+__pycache__
+*.pyc
+.env
+.venv
