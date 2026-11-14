@@ -1,0 +1,18 @@
+# project name by compose (custom)
+name: docker-learn
+
+services:
+  # service name (custom)
+  app:
+    # docker build
+    build: ./app
+    # docker run -p 8000:8000
+    ports:
+      - "8000:8000"
+
+# 명령어 docker compose up --build(띄우기 전에 각이미지들을 새로 빌드한다)
+
+# 좀 더 자주쓰는 패턴
+#   docker compose up --build -d
+#   docker logs -f app
+#   docker compose down
