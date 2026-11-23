@@ -40,6 +40,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "psycopg", extra = ["binary"] },
+    { name = "redis" },
     { name = "uvicorn" },
 ]
 
@@ -47,6 +48,7 @@ dependencies = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.162.5" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.9" },
+    { name = "redis", specifier = ">=8.2.0" },
     { name = "uvicorn", specifier = ">=0.54.0" },
 ]
 
@@ -298,6 +300,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/3a/d405a50e02ea81cd95e93fc97f43d351eeaa1707c28aa6fb58a9f1c1efa9/pydantic_core-2.50.4-graalpy313-graalpy253_313_native-macosx_11_0_arm64.whl", hash = "sha256:71e03d2ea1a221d020cfc5b6cc8bbbedef23a06704c70fcf4d0afb42965b22d1", size = 2049324, upload-time = "2026-11-05T09:15:02.379Z" },
     { url = "https://files.pythonhosted.org/packages/8f/3b/03e7992115e17cae4131ecd71aadb8fd5e4a04cc2aead72c3c27e9b453d1/pydantic_core-2.50.4-graalpy313-graalpy253_313_native-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:09450778e3ab58d3f565899fcfbf6c82926e31af29e28e799d1d50941316e0cb", size = 2119802, upload-time = "2026-11-05T09:15:03.901Z" },
     { url = "https://files.pythonhosted.org/packages/e3/d5/b76fc647e473377ca6e693c21549ee3a4a7677e4962c28ae4659337c5114/pydantic_core-2.50.4-graalpy313-graalpy253_313_native-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:4eb15be588407148ef5937dc8d9256a71f6b115e6cddadb7aa20b6ee384680dc", size = 2280639, upload-time = "2026-11-05T09:15:05.374Z" },
+]
+
+[[package]]
+name = "redis"
+version = "8.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/8a/408dd829367bb62972bd5d91bd8cc283c24c8344f80a880d4b3901ce43fd/redis-8.2.0.tar.gz", hash = "sha256:58b1493d83ba8f0e3ffe6bd781194ca5c01c91267ae03d29c1087b0b3c7d79c9", size = 5809579, upload-time = "2026-11-23T08:31:56.692Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/8f/98458650cca985032598a59caca0641e7889cf4d536dc12dc032bef7df47/redis-8.2.0-py3-none-any.whl", hash = "sha256:4ff649f10fae5e7e97798fb2a84e84a0a66e98310d75cad2b5a572ce0f9f15a7", size = 732892, upload-time = "2026-11-23T08:31:55.011Z" },
 ]
 
 [[package]]

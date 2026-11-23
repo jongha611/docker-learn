@@ -1,18 +1,60 @@
 # project name by compose (custom)
-name: docker-learn
+name: jh-docker-learn
 
+# ================ 서비스 =================== #
 services:
   # service name (custom)
-  app:
+  jh-app:
     # docker build
     build: ./app
     # docker run -p 8000:8000
     ports:
       - "8000:8000"
+    environment:
+      # The general form for a connection URI is:
+          # postgresql://[userspec@][hostspec][/dbname][?paramspec]
+      DATABASE_URL: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@jh-db:5432/${POSTGRES_DB}
+    depends_on:
+      - jh-db
+  
+  # service name (custom)
+  jh-db:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - jh-db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  jh-redis:
+    # docker compose exec jh-redis redis-server --version
+    # docker compose exec jh-redis redis-cli ping -> pong
+    image: redis:8.10-alpine
+
+volumes:
+  jh-db-data:
+
 
 # 명령어 docker compose up --build(띄우기 전에 각이미지들을 새로 빌드한다)
 
 # 좀 더 자주쓰는 패턴
-#   docker compose up --build -d
-#   docker logs -f app
-#   docker compose down
+    # docker compose up --build -d
+    # docker compose logs -f app -> 계속 따라 보기
+    # docker compose down
+
+# 볼륨은 컨테이너가 없어져도 알아서 없어지지 않는다 
+# 또한, 볼륨을 먼저 제거할 수도 없다
+
+# 볼륨 확인
+    # docker volume ls
+    # docker volume inspect docker-learn_db-data
+
+# 볼륨 정리
+    # docker volume prune
+    # docker volume rm <volume_name>
+    # docker rm -f -v <container_name> (컨테이너와 함께)
+    # docker compose down -v (compose로 띄운 컨테이너와 볼륨을 함께 제거)
+
