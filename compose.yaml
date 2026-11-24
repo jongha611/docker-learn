@@ -1,7 +1,6 @@
 # project name by compose (custom)
 name: jh-docker-learn
 
-# ================ 서비스 =================== #
 services:
   # service name (custom)
   jh-app:
@@ -14,6 +13,8 @@ services:
       # The general form for a connection URI is:
           # postgresql://[userspec@][hostspec][/dbname][?paramspec]
       DATABASE_URL: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@jh-db:5432/${POSTGRES_DB}
+          # redis://[servicename]:[port_number]/[db_number(start with 0 and max 15)]
+      REDIS_URL: redis://jh-redis:6379/0
     depends_on:
       - jh-db
   
@@ -32,7 +33,7 @@ services:
   jh-redis:
     # docker compose exec jh-redis redis-server --version
     # docker compose exec jh-redis redis-cli ping -> pong
-    image: redis:8.10-alpine
+    image: redis:8.10.3-alpine
 
 volumes:
   jh-db-data:
@@ -58,3 +59,7 @@ volumes:
     # docker rm -f -v <container_name> (컨테이너와 함께)
     # docker compose down -v (compose로 띄운 컨테이너와 볼륨을 함께 제거)
 
+# 레디스 키 or 버전 조회
+    # docker compose exec {service_name} redis-server --version
+    # docker compose exec {service_name} redis-cli keys "{arguments}"
+    # docker compose exec {service_name} redis-cli exists "{key_name_1}" "key_name_2" ...
