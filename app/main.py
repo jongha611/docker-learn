@@ -91,12 +91,18 @@ def follow(code: str):
             status_code=302,
         )
     print(f"cache miss: {code}")
-    with psycopg.connect(DATABASE_URL) as conn:
-        row = conn.execute(
-             "SELECT url FROM links WHERE code = %s",
-             (code,),
-        ).fetchone()
-
+    try:
+        with psycopg.connect(DATABASE_URL) as conn:
+            row = conn.execute(
+                "SELECT url FROM links WHERE code = %s",
+                (code,),
+            ).fetchone()
+    except psycopg.OperationalError:
+        print("db down, can not verify the code")
+        raise HTTPException(
+            status_code=503,
+            detail="service is unavailable",
+        )
     # 방어코드를 작성하지 않을 경우 생길 수 있는 문제 1:
     # 사용자의 잘못된 요청 -> 그러나 내 코드 터진걸로 안내 및 기록 (internal server error)
     if row is None:
