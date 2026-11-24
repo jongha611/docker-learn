@@ -78,7 +78,12 @@ def stats(code):
 
 @app.get("/{code}")
 def follow(code: str):
-    url = jh_cache.get(f"jh-link: {code}")
+    try:
+        url = jh_cache.get(f"jh-link: {code}")
+    # except: fall back 경로가 있는데 새로운 에러를 발생시키지 말것 (raise)
+    except redis.exceptions.ConnectionError:
+        print("redis down, fall back to db")
+        url = None
     if url is not None:
         print(f"cache hit: {code}")
         return RedirectResponse(
@@ -91,7 +96,21 @@ def follow(code: str):
              "SELECT url FROM links WHERE code = %s",
              (code,),
         ).fetchone()
-    jh_cache.set(f"jh-link: {code}", row[0], ex=3600)
+
+    # 방어코드를 작성하지 않을 경우 생길 수 있는 문제 1:
+    # 사용자의 잘못된 요청 -> 그러나 내 코드 터진걸로 안내 및 기록 (internal server error)
+    if row is None:
+        # raise는 실행되는 순간 함수를 끝냄
+        # 그래서 if 아래로 내려왔다는 것 자체가 이미 "row가 있다"는 뜻
+        # return을 고려하거나 else를 쓸 필요 없음
+        raise HTTPException(
+            status_code=404,
+            detail="not found",
+        )
+    try:
+        jh_cache.set(f"jh-link: {code}", row[0], ex=3600)
+    except redis.exceptions.ConnectionError:
+        print("redis down, saving cache is unavailable")
     return RedirectResponse(
         url=row[0],
         status_code=302,
