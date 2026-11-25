@@ -11,17 +11,15 @@ import psycopg
 # redis
 import redis
 
+from clients import jh_cache
+from feature import count_click
+
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-REDIS_URL = os.environ["REDIS_URL"]
 ALPHABET = string.ascii_letters + string.digits
 
 
 app = FastAPI()
-jh_cache = redis.Redis.from_url(
-    url=REDIS_URL,
-    decode_responses=True,
-)
 
 
 class ShortenRequest(BaseModel):
@@ -86,6 +84,7 @@ def follow(code: str):
         url = None
     if url is not None:
         print(f"cache hit: {code}")
+        count_click(code)
         return RedirectResponse(
             url,
             status_code=302,
@@ -117,6 +116,7 @@ def follow(code: str):
         jh_cache.set(f"jh-link: {code}", row[0], ex=3600)
     except redis.exceptions.ConnectionError:
         print("redis down, saving cache is unavailable")
+    count_click(code)
     return RedirectResponse(
         url=row[0],
         status_code=302,
