@@ -35,6 +35,14 @@ services:
     # docker compose exec jh-redis redis-cli ping -> pong
     image: redis:8.10.3-alpine
 
+  jh-worker:
+    build: ./app
+    command: ["python", "worker.py"]
+    environment:
+      REDIS_URL: redis://jh-redis:6379/0
+    depends_on:
+      - jh-redis
+
 volumes:
   jh-db-data:
 
