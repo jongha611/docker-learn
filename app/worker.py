@@ -1,10 +1,17 @@
 import os
-import time
 
-import redis
 import psycopg
 
 from clients import jh_redis_client
+
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+
+
+jh_redis_client.ping()
+with psycopg.connect(DATABASE_URL) as conn:
+    conn.execute("SELECT 1")
+print("redis ok, db ok")
 
 
 while True:
@@ -14,4 +21,11 @@ while True:
     )
     if item is None:
         continue
-    print(f"popped: {item}")
+    _, code = item
+
+    with psycopg.connect(DATABASE_URL) as conn:
+        conn.execute(
+            query="UPDATE Links SET clicks = clicks + 1 WHERE code = %s",
+            params=(code,), 
+        )
+    print(f"click_counted: {code}")
